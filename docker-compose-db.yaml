@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    container_name: postgres
+    image: postgres:16.2
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+    volumes:
+      - pg-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      postgres-db-network:
+        ipv4_address: 192.168.100.253
+
+volumes:
+  pg-volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /data/postgres
+
+networks:
+  postgres-db-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
+          gateway: 192.168.100.1
