@@ -3,6 +3,9 @@ spring:
   application:
     name: medium-articles-api
 
+  profiles:
+    active: postgres
+
   datasource:
     url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     username: ${DATABASE_USERNAME}
