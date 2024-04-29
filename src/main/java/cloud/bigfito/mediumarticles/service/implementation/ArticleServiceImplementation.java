@@ -4,6 +4,8 @@ import cloud.bigfito.mediumarticles.dto.ArticleDTO;
 import cloud.bigfito.mediumarticles.entity.Article;
 import cloud.bigfito.mediumarticles.repository.ArticleRepository;
 import cloud.bigfito.mediumarticles.service.ArticleService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -52,6 +54,7 @@ public class ArticleServiceImplementation implements ArticleService {
 
     }
 
+    @Cacheable(value = "article-list", key = "#page")
     public List<Article> getAllArticlesFromDB(Integer page) {
 
         Sort articlesSort = Sort.by(Sort.Direction.ASC, "id");
@@ -60,6 +63,7 @@ public class ArticleServiceImplementation implements ArticleService {
 
     }
 
+    @Cacheable(value = "article-single", key = "#id")
     public Optional<Article> getArticleFromDB(Long id) {
 
         return articleRepository.findById(id);
@@ -79,6 +83,7 @@ public class ArticleServiceImplementation implements ArticleService {
     }
 
     @Transactional
+    @CacheEvict(value = "article-single", key = "#id")
     public Boolean removeArticleFromDB(Long id) {
 
         Optional<Article> articleInDatabase = articleRepository.findById(id);

@@ -1,18 +1,24 @@
 spring:
 
-  profiles:
-    active: postgres
+  application:
+    name: medium-articles-api
 
   datasource:
-
-    # URL TO USE WHEN WORKING LOCALLY
     url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
-
     hibernate:
       ddl-auto: none
     database: postgresql
     show-sql: true
+
+  cache:
+    type: redis
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}

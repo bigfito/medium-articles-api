@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "articles")
-public class Article {
+public class Article implements Serializable {
     @Id
     @ColumnDefault("nextval('articles_id_article_seq'")
     @Column(name = "id_article", nullable = false)
