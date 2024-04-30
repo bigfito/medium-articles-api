@@ -1,5 +1,7 @@
 target/
 .mvn/
+.run
+.idea
 
 !**/src/main/**/target/
 !**/src/test/**/target/
