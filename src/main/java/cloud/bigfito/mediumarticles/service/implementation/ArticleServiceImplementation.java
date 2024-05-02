@@ -54,7 +54,8 @@ public class ArticleServiceImplementation implements ArticleService {
 
     }
 
-    @Cacheable(value = "article-list", key = "#page")
+    @Cacheable(value = "article-list")
+//    @Cacheable(value = "article-list", key = "#page")
     public List<Article> getAllArticlesFromDB(Integer page) {
 
         Sort articlesSort = Sort.by(Sort.Direction.ASC, "id");
@@ -63,7 +64,8 @@ public class ArticleServiceImplementation implements ArticleService {
 
     }
 
-    @Cacheable(value = "article-single", key = "#id")
+    @Cacheable(value = "article-single")
+//    @Cacheable(value = "article-single", key = "#id")
     public Optional<Article> getArticleFromDB(Long id) {
 
         return articleRepository.findById(id);

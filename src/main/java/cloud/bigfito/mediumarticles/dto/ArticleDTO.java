@@ -50,8 +50,6 @@ public class ArticleDTO implements Serializable {
     @NotNull
     private final LocalDate date;
 
-
-
     public ArticleDTO(String url, String title, String subtitle, String firstPara, String image, Double claps, Double responses, Double readingTime, String publication, LocalDate date) {
         this.url = url;
         this.title = title;

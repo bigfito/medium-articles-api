@@ -1,10 +1,10 @@
 services:
 
   postgres:
-    container_name: postgres
+    container_name: postgres-master
     image: postgres:16.2
     environment:
-      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_USER=${DATABASE_USERNAME}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
     volumes:
       - pg-volume:/var/lib/postgresql/data
@@ -12,7 +12,23 @@ services:
       - "5432:5432"
     networks:
       medium-articles-api-network:
-        ipv4_address: ${DATABASE_HOST}
+        ipv4_address: ${DABASE_HOST}
+
+  replica:
+    container_name: postgres-replica
+    image: postgres:16.2
+    environment:
+      - POSTGRES_USER=${REPLICA_USERNAME}
+      - POSTGRES_PASSWORD=${REPLICA_PASSWORD}
+    volumes:
+      - re-volume:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      medium-articles-api-network:
+        ipv4_address: ${REPLICA_HOST}
+    depends_on:
+      - postgres
 
   redis:
     container_name: redis-cache
@@ -32,7 +48,12 @@ volumes:
       type: none
       o: bind
       device: ${VOLUME_POSTGRES}
-
+  re-volume:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${VOLUME_REPLICA}
   redis-volume:
     driver: local
     driver_opts:

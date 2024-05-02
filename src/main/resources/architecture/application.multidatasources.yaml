@@ -7,11 +7,16 @@ spring:
     active: postgres
 
   # MASTER DB WRITES, UPDATES & DELETES
-  datasource:
+  datasource1:
     url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+
+  # REPLICA DB ONLY SELECTS
+  datasource2:
+    url: jdbc:postgresql://${REPLICA_HOST}:${REPLICA_PORT}/${REPLICA_NAME}
+    username: ${REPLICA_USERNAME}
+    password: ${REPLICA_PASSWORD}
 
   jpa:
     hibernate:
@@ -24,5 +29,5 @@ spring:
 
   data:
     redis:
-      host: localhost
+      host: ${REDIS_HOST}
       port: 6379

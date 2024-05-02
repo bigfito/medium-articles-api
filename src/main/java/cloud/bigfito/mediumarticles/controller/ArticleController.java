@@ -1,6 +1,5 @@
 package cloud.bigfito.mediumarticles.controller;
 
-import cloud.bigfito.mediumarticles.dto.ArticleDTO;
 import cloud.bigfito.mediumarticles.entity.Article;
 import cloud.bigfito.mediumarticles.exception.custom.BadArgumentException;
 import cloud.bigfito.mediumarticles.service.implementation.ArticleServiceImplementation;
@@ -90,31 +89,6 @@ public class ArticleController {
         }catch (CannotCreateTransactionException e2){
             responseHeaders.add("Status", "ERROR");
             return new ResponseEntity<>("The API is not AVAILABLE at this moment.", responseHeaders, HttpStatus.SERVICE_UNAVAILABLE);
-        }
-
-    }
-
-    @PostMapping("/articles")
-    public ResponseEntity<?> insertArticle(@Valid @RequestBody ArticleDTO articleDTO) {
-
-        HttpHeaders responseHeaders = new HttpHeaders();
-
-        try {
-            Article article = articleServiceImplementation.saveArticleInDB(articleDTO);
-
-            if ( article.getId() != null ) {
-                responseHeaders.add("Status", "CREATED");
-                return new ResponseEntity<>(article, responseHeaders, HttpStatus.CREATED);
-            }else{
-                responseHeaders.add("Status", "FOUND");
-                return new ResponseEntity<>("An article with the same TITLE already exists.", responseHeaders, HttpStatus.FOUND);
-            }
-        }catch (CannotCreateTransactionException e1){
-            responseHeaders.add("Status", "ERROR");
-            return new ResponseEntity<>("The API is not AVAILABLE at this moment.", responseHeaders, HttpStatus.SERVICE_UNAVAILABLE);
-        }catch (Exception e2){
-            responseHeaders.add("Status", "ERROR");
-            return new ResponseEntity<>("Check parameters in the BODY REQUEST.", responseHeaders, HttpStatus.BAD_REQUEST);
         }
 
     }
