@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 @Log4j2
 public class RedisCacheCleaner {
 
-    private CacheManager cacheManager;
+    private final CacheManager cacheManager;
 
     public RedisCacheCleaner(CacheManager cacheManager){
         this.cacheManager = cacheManager;
