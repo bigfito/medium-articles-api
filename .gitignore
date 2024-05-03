@@ -33,3 +33,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### aplication.old
+/src/main/resources/application.old
