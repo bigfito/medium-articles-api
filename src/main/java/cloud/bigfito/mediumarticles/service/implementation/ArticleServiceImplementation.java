@@ -2,6 +2,7 @@ package cloud.bigfito.mediumarticles.service.implementation;
 
 import cloud.bigfito.mediumarticles.dto.ArticleDTO;
 import cloud.bigfito.mediumarticles.entity.Article;
+import cloud.bigfito.mediumarticles.entity.SavedArticle;
 import cloud.bigfito.mediumarticles.repository.ArticleRepository;
 import cloud.bigfito.mediumarticles.service.ArticleService;
 import org.springframework.cache.annotation.CacheEvict;
@@ -26,9 +27,9 @@ public class ArticleServiceImplementation implements ArticleService {
 
     @Transactional
     @Override
-    public Article saveArticleInDB(ArticleDTO articleDTO) {
+    public SavedArticle saveArticleInDB(ArticleDTO articleDTO) {
 
-        Optional<Article> articleInDatabase =  articleRepository.findByUrl( articleDTO.getUrl() );
+        SavedArticle savedArticle = new SavedArticle();
 
         Article articleToSave = new Article();
         articleToSave.setUrl( articleDTO.getUrl() );
@@ -42,13 +43,21 @@ public class ArticleServiceImplementation implements ArticleService {
         articleToSave.setPublication( articleDTO.getPublication() );
         articleToSave.setDate( articleDTO.getDate() );
 
+        Optional<Article> articleInDatabase =  articleRepository.findByUrl(articleDTO.getUrl());
+
         if ( articleInDatabase.isPresent() ) {
 
-            return articleToSave;
+            articleToSave.setId(Long.parseLong("0"));
+            savedArticle.setArticle(articleToSave);
+            savedArticle.setSaved(false);
+            return savedArticle;
 
         }else{
 
-            return articleRepository.save( articleToSave );
+            articleToSave = articleRepository.save(articleToSave);
+            savedArticle.setArticle(articleToSave);
+            savedArticle.setSaved(true);
+            return savedArticle;
 
         }
 

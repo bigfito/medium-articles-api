@@ -1,6 +1,8 @@
 package cloud.bigfito.mediumarticles.controller;
 
+import cloud.bigfito.mediumarticles.dto.ArticleDTO;
 import cloud.bigfito.mediumarticles.entity.Article;
+import cloud.bigfito.mediumarticles.entity.SavedArticle;
 import cloud.bigfito.mediumarticles.exception.custom.BadArgumentException;
 import cloud.bigfito.mediumarticles.service.implementation.ArticleServiceImplementation;
 import jakarta.validation.Valid;
@@ -93,6 +95,32 @@ public class ArticleController {
 
     }
 
+    @PostMapping("/articles")
+    public ResponseEntity<?> insertArticle(@Valid @RequestBody ArticleDTO articleDTO) {
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        SavedArticle savedArticle;
+
+        try {
+            savedArticle = articleServiceImplementation.saveArticleInDB(articleDTO);
+
+            if ( savedArticle.isSaved() ){
+                responseHeaders.add("Status", "CREATED");
+                return new ResponseEntity<>(savedArticle.getArticle(), responseHeaders, HttpStatus.CREATED);
+            }else{
+                responseHeaders.add("Status", "FOUND");
+                return new ResponseEntity<>(articleDTO, responseHeaders, HttpStatus.FOUND);
+            }
+        }catch (CannotCreateTransactionException e1){
+            responseHeaders.add("Status", "ERROR");
+            return new ResponseEntity<>("The API is not AVAILABLE at this moment.", responseHeaders, HttpStatus.SERVICE_UNAVAILABLE);
+        }catch (Exception e2){
+            responseHeaders.add("Status", "ERROR");
+            return new ResponseEntity<>("Check parameters in the BODY REQUEST.", responseHeaders, HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
     @PutMapping("/articles")
     public ResponseEntity<?> updateArticle(@Valid @RequestBody Article article) {
 
@@ -128,7 +156,7 @@ public class ArticleController {
 
                 if ( articleServiceImplementation.removeArticleFromDB(articleId) ) {
                     responseHeaders.add("Status", "DELETED");
-                    return new ResponseEntity<>(null, responseHeaders, HttpStatus.OK);
+                    return new ResponseEntity<>("Article has been removed.", responseHeaders, HttpStatus.OK);
                 }else{
                     responseHeaders.add("Status", "NOT_FOUND");
                     return new ResponseEntity<>("There is no article for the given ID.", responseHeaders, HttpStatus.NOT_FOUND);
