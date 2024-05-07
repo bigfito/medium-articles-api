@@ -8,9 +8,9 @@ spring:
 
   # MASTER DB WRITES, UPDATES & DELETES
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/medium
+    username: postgres
+    password: mysecretpassword
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -24,5 +24,5 @@ spring:
 
   data:
     redis:
-      host: ${REDIS_HOST}
+      host: localhost
       port: 6379

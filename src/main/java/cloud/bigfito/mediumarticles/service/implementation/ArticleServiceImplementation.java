@@ -1,8 +1,9 @@
 package cloud.bigfito.mediumarticles.service.implementation;
 
 import cloud.bigfito.mediumarticles.dto.ArticleDTO;
+import cloud.bigfito.mediumarticles.dto.ArticleDTOtoArticle;
 import cloud.bigfito.mediumarticles.entity.Article;
-import cloud.bigfito.mediumarticles.entity.SavedArticle;
+import cloud.bigfito.mediumarticles.entity.ArticleToSave;
 import cloud.bigfito.mediumarticles.repository.ArticleRepository;
 import cloud.bigfito.mediumarticles.service.ArticleService;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,36 +28,32 @@ public class ArticleServiceImplementation implements ArticleService {
 
     @Transactional
     @Override
-    public SavedArticle saveArticleInDB(ArticleDTO articleDTO) {
+    public ArticleToSave saveArticleInDB(ArticleDTO articleDTO) {
 
-        SavedArticle savedArticle = new SavedArticle();
-
+        ArticleToSave savedArticle = new ArticleToSave();
         Article articleToSave = new Article();
-        articleToSave.setUrl( articleDTO.getUrl() );
-        articleToSave.setTitle( articleDTO.getTitle() );
-        articleToSave.setSubtitle( articleDTO.getSubtitle() );
-        articleToSave.setFirstPara( articleDTO.getFirstPara() );
-        articleToSave.setImage( articleDTO.getImage() );
-        articleToSave.setClaps( articleDTO.getClaps() );
-        articleToSave.setResponses( articleDTO.getResponses() );
-        articleToSave.setReadingTime( articleDTO.getReadingTime() );
-        articleToSave.setPublication( articleDTO.getPublication() );
-        articleToSave.setDate( articleDTO.getDate() );
 
+        ArticleDTOtoArticle articleDTOtoArticle = new ArticleDTOtoArticle(articleDTO);
+        articleToSave = articleDTOtoArticle.getArticleFromArticleDTO();
+
+        // Make sure there is no other article with the same URL
         Optional<Article> articleInDatabase =  articleRepository.findByUrl(articleDTO.getUrl());
 
         if ( articleInDatabase.isPresent() ) {
 
-            articleToSave.setId(Long.parseLong("0"));
-            savedArticle.setArticle(articleToSave);
-            savedArticle.setSaved(false);
+            savedArticle.setArticleToSave(articleToSave);
+            savedArticle.setPresent(false);
+
             return savedArticle;
 
         }else{
 
+            // Setting ID to NULL so the database takes care of it
+            articleToSave.setId(null);
             articleToSave = articleRepository.save(articleToSave);
-            savedArticle.setArticle(articleToSave);
-            savedArticle.setSaved(true);
+            savedArticle.setArticleToSave(articleToSave);
+            savedArticle.setPresent(true);
+
             return savedArticle;
 
         }

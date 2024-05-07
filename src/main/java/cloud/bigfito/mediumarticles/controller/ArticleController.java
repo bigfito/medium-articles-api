@@ -2,7 +2,7 @@ package cloud.bigfito.mediumarticles.controller;
 
 import cloud.bigfito.mediumarticles.dto.ArticleDTO;
 import cloud.bigfito.mediumarticles.entity.Article;
-import cloud.bigfito.mediumarticles.entity.SavedArticle;
+import cloud.bigfito.mediumarticles.entity.ArticleToSave;
 import cloud.bigfito.mediumarticles.exception.custom.BadArgumentException;
 import cloud.bigfito.mediumarticles.service.implementation.ArticleServiceImplementation;
 import jakarta.validation.Valid;
@@ -99,14 +99,14 @@ public class ArticleController {
     public ResponseEntity<?> insertArticle(@Valid @RequestBody ArticleDTO articleDTO) {
 
         HttpHeaders responseHeaders = new HttpHeaders();
-        SavedArticle savedArticle;
+        ArticleToSave articleToSave;
 
         try {
-            savedArticle = articleServiceImplementation.saveArticleInDB(articleDTO);
+            articleToSave = articleServiceImplementation.saveArticleInDB(articleDTO);
 
-            if ( savedArticle.isSaved() ){
+            if ( articleToSave.isPresent() ){
                 responseHeaders.add("Status", "CREATED");
-                return new ResponseEntity<>(savedArticle.getArticle(), responseHeaders, HttpStatus.CREATED);
+                return new ResponseEntity<>(articleToSave.getArticleToSave(), responseHeaders, HttpStatus.CREATED);
             }else{
                 responseHeaders.add("Status", "FOUND");
                 return new ResponseEntity<>(articleDTO, responseHeaders, HttpStatus.FOUND);
