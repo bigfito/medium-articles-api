@@ -36,3 +36,4 @@ build/
 
 ### aplication.old
 /src/main/resources/application.old
+docker-compose-db.env
